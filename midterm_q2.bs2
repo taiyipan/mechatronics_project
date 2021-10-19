@@ -1,0 +1,41 @@
+'{$STAMP BS2}
+'{$PBASIC 2.5}
+
+
+Main:
+	'declare variables 
+	t VAR WORD 
+	t = 0
+
+	'check for button press to enter red state 
+	DO
+		IF (IN4 = 1) THEN 
+			GOSUB Red_State
+		ENDIF 
+	LOOP 
+	RETURN 
+
+'start timer and count for 2 seconds (t = 2000)
+'light up red LED 
+'if no button is pressed within the time, light up yellow LED
+Red_State:
+	HIGH 13 'red 
+	DO
+		PAUSE 200
+		t = t + 200
+		'print t 
+		DEBUG ? t 
+		'check for button press 
+		IF (IN4 = 1) THEN 
+			GOSUB End_State
+		ENDIF 
+		'check for time 
+		IF (t > 2000 ) THEN 
+			HIGH 14 
+		ENDIF 
+	LOOP 
+	RETURN 
+
+End_State:
+	END
+	RETURN 

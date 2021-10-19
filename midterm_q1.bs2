@@ -1,0 +1,45 @@
+' {$STAMP BS2}
+' {$PBASIC 2.5}
+BUTTON1 PIN 0
+BUTTON2 PIN 4
+
+t VAR Word
+speed VAR Word
+Dist VAR Word
+temp1 VAR Word
+temp VAR Word
+
+temp1=1
+temp=0
+t=0
+
+DO WHILE(temp1=1)
+
+    IF (BUTTON1=1 AND temp=0 ) THEN
+    DEBUG "enter",CR
+    temp=1
+    PAUSE 100
+    ELSEIF (temp=1 AND BUTTON2=0) THEN
+    t=t+1
+    PAUSE 100
+    ELSEIF (temp=1 AND BUTTON2=1) THEN
+    temp1=0
+    PAUSE 100
+  ENDIF
+LOOP
+dist=1800
+speed=dist/t
+DEBUG "speed is ", DEC speed
+
+IF speed >19 THEN
+HIGH 13
+ENDIF
+
+
+
+
+
+
+
+
+
