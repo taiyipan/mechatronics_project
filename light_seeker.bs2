@@ -1,0 +1,53 @@
+'{$STAMP BS2}
+'{$PBASIC 2.5}
+
+Main: 
+	counter VAR WORD 
+	position VAR WORD 
+	theta VAR WORD 
+	lowest_pos VAR WORD 'position for brightest light 
+	lowest_tau VAR WORD 'brightest light 
+	tau VAR WORD
+	theta = 0 '0-180 degrees 
+	lowest_tau = 65535
+	lowest_pos = 0
+
+	FOR counter = 0 TO 180:
+		theta = 0
+		position = 200 + (5 * theta)
+		PULSOUT 14, position 
+		PAUSE 20
+	NEXT 
+	PAUSE 2000
+	GOSUB Main_Cycle
+
+
+Main_Cycle:
+	FOR theta = 0 TO 180:
+		position = 200 + (5 * theta)
+		PULSOUT 14, position 
+		HIGH 5		PAUSE 3
+		RCTIME 5, 1, tau
+		IF (tau < lowest_tau) THEN 
+			lowest_tau = tau
+			lowest_pos = position
+		ENDIF
+		PAUSE 20
+	NEXT 
+	DEBUG CLS
+	DEBUG "main done", CR
+	DEBUG "tau"
+	DEBUG DEC lowest_tau, CR
+	DEBUG "pos"
+	DEBUG DEC lowest_pos, CR
+	DEBUG "theta"
+	DEBUG DEC (lowest_pos - 200) / 5, CR
+	GOSUB Light_Seek
+
+Light_Seek:
+	DEBUG "light loop"
+	FOR counter = 1 TO 100:
+		PULSOUT 14, lowest_pos 
+		PAUSE 20 
+	NEXT 
+	END
