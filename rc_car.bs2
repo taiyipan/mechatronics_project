@@ -1,0 +1,65 @@
+'{$STAMP BS2}
+'{$PBASIC 2.5}
+
+pulseCount VAR WORD
+left VAR WORD 
+right VAR WORD 
+
+left = 0 
+right = 0
+
+Main: 
+  GOSUB Check_Buttons 
+  PAUSE 50
+  GOSUB Assign_States 
+  GOTO Main 	
+  END 
+
+'-------------------------------------
+
+Check_Buttons:
+  IF (IN2 = 1 AND IN1 = 1) THEN
+    left = 1 
+	right = 1
+  ELSEIF (IN2 = 1 AND IN1 = 0) THEN 
+	left = 1 
+	right = 0 
+  ELSEIF (IN2 = 0 AND IN1 = 1) THEN 
+	left = 0 
+	right = 1 
+  ENDIF
+  RETURN 
+
+Assign_States:
+  IF (left = 1 AND right = 1) THEN 
+	GOSUB Stop_Pulse 
+  ELSEIF (left = 1 AND right = 0) THEN 
+	GOSUB Turn_Left 
+  ELSEIF (left = 0 AND right = 1) THEN 
+	GOSUB Turn_Right 
+  ENDIF 
+  RETURN 
+
+Stop_Pulse:
+  PULSOUT 13, 750
+  PULSOUT 12, 750
+  PAUSE 20
+  RETURN
+
+Turn_Left:
+  DEBUG "Left", CR
+  FOR pulseCount = 0 TO 20
+    PULSOUT 13, 650
+    PULSOUT 12, 650
+    PAUSE 20
+  NEXT
+  RETURN
+
+Turn_Right:
+  DEBUG "Right", CR
+  FOR pulseCount = 0 TO 20
+    PULSOUT 13, 850
+    PULSOUT 12, 850
+    PAUSE 20
+  NEXT
+  RETURN

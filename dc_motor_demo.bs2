@@ -1,0 +1,37 @@
+'{$STAMP BS2}
+'{$PBASIC 2.5}
+
+Main:
+counter VAR WORD 
+pulseCount VAR WORD 
+'FOR counter = 1 TO 100:
+	'GOSUB FoRward_Pulse 
+'NEXT
+DEBUG "end of main", CR
+END 
+
+Forward_Pulse:
+  DEBUG "Forward", CR
+  PULSOUT 13, 850
+  PULSOUT 12, 650
+  PAUSE 20
+  RETURN
+
+Turn_Left:
+  DEBUG "Left", CR
+  FOR pulseCount = 0 TO 20
+    PULSOUT 13, 650
+    PULSOUT 12, 650
+    PAUSE 20
+  NEXT
+  RETURN
+
+Turn_Right:
+  DEBUG "Right", CR
+  FOR pulseCount = 0 TO 20
+    PULSOUT 13, 850
+    PULSOUT 12, 850
+    PAUSE 20
+  NEXT
+  RETURN
+
