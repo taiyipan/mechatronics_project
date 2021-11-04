@@ -1,0 +1,50 @@
+' {$STAMP BS2}
+' {$PBASIC 2.5}
+
+
+X VAR Byte
+
+Angle VAR Word
+Duration VAR Word
+
+Tau VAR Word
+
+OUTPUT 14
+
+Angle = 135
+Duration = 5*Angle +200
+
+DEBUG ?  Angle
+
+Main:
+'rotate from 0 to 180
+  FOR Angle = 0 TO 180 STEP 5                     ' repeat with Reps = 1, 2, 3
+    DEBUG ?  Angle                          ' print * on the screen
+    Duration = 5*Angle +200
+    GOSUB Rotate
+    GOSUB Detect
+
+  NEXT
+  END
+
+
+
+
+Rotate:
+FOR X = 1 TO 100
+PULSOUT 14,Duration
+PAUSE 1
+NEXT
+RETURN
+
+Detect:
+HIGH 5
+PAUSE 3
+RCTIME 5,1, tau
+DEBUG CLS
+DEBUG DEC tau
+PAUSE 100
+RETURN
+
+
+
