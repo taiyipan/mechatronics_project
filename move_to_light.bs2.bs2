@@ -1,0 +1,89 @@
+'{$STAMP BS2}
+'{$PBASIC 2.5}
+
+counter VAR WORD 
+lowest_tau VAR WORD 'brightest light 
+tau VAR WORD
+max_tau VAR WORD 
+min_tau VAR WORD 
+tau_pin VAR WORD 
+lowest_tau = 65535
+tau_pin = 0
+'---------------------------
+Main:
+  GOSUB Scan_Stage
+  GOSUB Search_Stage 
+  GOSUB Forward_Stage
+  END 
+'--------------------------
+Scan_Stage:
+  GOSUB Quarter_Left
+  GOSUB Quarter_Right
+  GOSUB Quarter_Right 
+  RETURN 
+
+'search 180 degrees to the left 
+Search_Stage:
+  FOR counter = 1 TO 48:
+     PULSOUT 13, 650
+     PULSOUT 12, 650 
+     PAUSE 20
+	max_tau = lowest_tau + 30 
+	min_tau = lowest_tau - 30
+	HIGH tau_pin     PAUSE 3
+     RCTIME tau_pin, 1, tau
+     IF (tau < max_tau AND tau > min_tau) THEN 
+		DEBUG "found", CR 
+		DEBUG DEC tau, CR
+		DEBUG DEC lowest_tau
+         RETURN 
+	ENDIF 
+  NEXT 
+  RETURN 
+
+'terminal stage 
+Forward_Stage:
+  FOR counter = 1 TO 176:
+	GOSUB Forward_Pulse
+  NEXT 
+  END 
+  RETURN 
+
+'---------------------------------
+
+Forward_Pulse:
+  'DEBUG "Forward", CR
+  PULSOUT 13, 850
+  PULSOUT 12, 650
+  PAUSE 20
+  RETURN
+
+Quarter_Left:
+  FOR counter = 1 TO 24:
+	PULSOUT 13, 650
+	PULSOUT 12, 650 
+	PAUSE 20
+	GOSUB Check_Tau 
+  NEXT 
+  RETURN 
+
+Quarter_Right:
+  FOR counter = 1 TO 24:
+	PULSOUT 13, 850
+	PULSOUT 12, 850 
+	PAUSE 20 
+	GOSUB Check_Tau
+  NEXT
+  RETURN  
+
+Check_Tau:
+  HIGH tau_pin  PAUSE 3
+  RCTIME tau_pin, 1, tau
+  DEBUG DEC tau, CR
+  IF (tau < lowest_tau) THEN 
+	lowest_tau = tau 
+	DEBUG "lowest found"
+	DEBUG DEC lowest_tau, CR
+  ENDIF
+  RETURN 
+

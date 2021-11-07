@@ -1,0 +1,10 @@
+'{$STAMP BS2}
+'{$PBASIC 2.5}
+tau VAR WORD 
+DO 
+  HIGH 0  PAUSE 3
+  RCTIME 0, 1, tau
+  
+  DEBUG CLS ,DEC tau, CR
+  
+LOOP
