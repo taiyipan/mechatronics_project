@@ -1,0 +1,23 @@
+'{$STAMP BS2}
+'{$PBASIC 2.5}
+
+counter VAR WORD 
+counter = 0
+
+DO 
+	IF (IN3 = 1) THEN 
+		counter = counter + 1
+	ENDIF 
+	PAUSE 50 
+	IF (IN7 = 1) THEN 
+		counter = counter - 1
+	ENDIF 
+	PAUSE 50 
+	IF (counter <> 0) THEN 
+		HIGH 10 
+	ELSE
+		LOW 10 
+	ENDIF 
+	PAUSE 100
+	DEBUG DEC counter, HOME
+LOOP 
