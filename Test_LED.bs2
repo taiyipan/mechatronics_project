@@ -1,0 +1,18 @@
+'Testing the LED
+' Turn the LED on/off once every second.
+' {$STAMP BS2}
+' {$PBASIC 2.5}
+
+LED1 PIN 10  ' Assigning the LED to Pin
+LED2 PIN 11
+
+
+DEBUG HOME, "The LED connected to Pin 10,11 is blinking!"
+DO
+  HIGH LED1
+  LOW LED2
+  PAUSE 500
+  LOW LED1
+  HIGH LED2
+  PAUSE 500
+LOOP
