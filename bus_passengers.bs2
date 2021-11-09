@@ -13,7 +13,7 @@ DO
 		counter = counter - 1
 	ENDIF 
 	PAUSE 50 
-	IF (counter <> 0) THEN 
+	IF (counter <> 0) THEN 'you can also put counter==0 and LOW 10 if not equal to syntax is confusing
 		HIGH 10 
 	ELSE
 		LOW 10 
