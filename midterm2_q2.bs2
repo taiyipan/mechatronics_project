@@ -1,0 +1,71 @@
+'{$STAMP BS2}
+'{$PBASIC 2.5}
+
+Setup:
+	tau VAR WORD 
+	counter VAR WORD 
+	time VAR WORD 
+	tau_threshold VAR WORD 
+
+Main:
+	tau_threshold = 200
+	time = 0
+	HIGH 8 
+	'train stops for 5 seconds 
+	FOR counter = 1 TO 100:
+		GOSUB Check_Tau
+		IF (tau > tau_threshold) THEN 
+			GOSUB Passenger_Detected
+		ENDIF 
+		PAUSE 47
+	NEXT 
+	GOSUB No_Passenger_Detected
+	END 
+
+' stages ------------
+Passenger_Detected:
+	DEBUG "passenger" 
+	LOW 8 
+	DO WHILE (IN1 = 0)
+		TOGGLE 11
+		PAUSE 50
+	LOOP
+	GOSUB No_Passenger_Detected 
+	RETURN 
+
+No_Passenger_Detected:
+	DEBUG "no passenger", CR
+	time = 0
+	LOW 11
+	LOW 8 
+	FOR counter = 1 TO 40:
+		TOGGLE 10
+		PAUSE 50 
+	NEXT 
+	GOSUB Forward 
+	RETURN 
+
+Forward:
+	DEBUG "forward", CR
+	time = 0
+	LOW 10
+	LOW 11
+	FOR counter = 1 TO 150:
+		GOSUB Forward_Pulse
+	NEXT
+	END 	
+	RETURN 
+
+' subroutines --------
+Check_Tau:
+	HIGH 0
+	PAUSE 3 
+	RCTIME 0, 1, tau
+	DEBUG DEC tau, HOME, CR 
+	RETURN 
+
+Forward_Pulse:
+  PULSOUT 13, 850
+  PULSOUT 12, 650
+  PAUSE 20
+  RETURN
