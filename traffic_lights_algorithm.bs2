@@ -3,52 +3,56 @@
 
 
 Setup:
-	'variables 
+	'variables
 	multiplier VAR WORD
-	counter VAR WORD 
+	counter VAR WORD
 	'tune this parameter to set cycle rate; increase to lengthen cycle
 	multiplier = 1
 
 Main:
-	'red/green
-	HIGH 2
-	HIGH 5
-	HIGH 6
-	HIGH 9
-	FOR counter = 1 TO (20 * multiplier): 'base 2 seconds 
+	HIGH 2 'bottom green on
+	HIGH 5 'top green on
+	HIGH 6 'left red on
+	HIGH 9 'right red on
+	FOR counter = 1 TO (20 * multiplier): 'base 2 seconds
 		GOSUB MPU6050_Interrupt
 		PAUSE 100
-	LOW 2
-	LOW 5 
-	LOW 6 
-	LOW 9
-	'yellow  
-	HIGH 1
-	HIGH 4
-	HIGH 7
-	HIGH 10
-	FOR counter = 1 TO (10 * multiplier): 'base 1 second 
-		GOSUB MPU6050_Interrupt 
-		PAUSE 100
-	LOW 1
-	LOW 4 
-	LOW 7 
-	LOW 10
-	'red/green 
-	HIGH 0
-	HIGH 3
-	HIGH 8
-	HIGH 11
-	FOR counter = 1 TO (20 * multiplier): 'base 2 seconds 
+	NEXT
+	LOW 2 'bottom green off
+	LOW 5 'top green off
+	HIGH 1 'bottom yellow on
+	HIGH 4 'top yellow on
+	FOR counter = 1 TO (10 * multiplier): 'base 1 second
 		GOSUB MPU6050_Interrupt
 		PAUSE 100
-	LOW 0 
-	LOW 3
-	LOW 8 
-	LOW 11
+	NEXT
+	LOW 1 'bottom yellow off
+	LOW 4 'top yellow off
+	LOW 6 'left red off
+	LOW 9 'right red off
+	HIGH 0 'bottom red on
+	HIGH 3 'top red on
+	HIGH 8 'left green on
+	HIGH 11 'right green on
+	FOR counter = 1 TO (20 * multiplier): 'base 2 seconds
+		GOSUB MPU6050_Interrupt
+		PAUSE 100
+	NEXT
+	LOW 8 'left green off
+	LOW 11 'right green off
+	HIGH 7 'left yellow on
+	HIGH 10 'right yellow on
+	FOR counter = 1 TO (10 * multiplier): 'base 1 second
+		GOSUB MPU6050_Interrupt
+		PAUSE 100
+	NEXT
+	LOW 7 'left yellow off
+	LOW 10 'right yellow off
+	LOW 0 'bottom red off
+	LOW 3 'top red off
 	'loop
-	GOTO Main 
-	END 
+	GOTO Main
+	END
 
 MPU6050_Interrupt:
-	RETURN 
+	RETURN
