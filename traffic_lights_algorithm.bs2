@@ -14,7 +14,7 @@ Main:
 	HIGH 5 'top green on
 	HIGH 6 'left red on
 	HIGH 9 'right red on
-	FOR counter = 1 TO (20 * multiplier): 'base 2 seconds
+	FOR counter = 1 TO (30 * multiplier): 'base 3 seconds
 		GOSUB MPU6050_Interrupt
 		PAUSE 100
 	NEXT
@@ -34,7 +34,7 @@ Main:
 	HIGH 3 'top red on
 	HIGH 8 'left green on
 	HIGH 11 'right green on
-	FOR counter = 1 TO (20 * multiplier): 'base 2 seconds
+	FOR counter = 1 TO (30 * multiplier): 'base 3 seconds
 		GOSUB MPU6050_Interrupt
 		PAUSE 100
 	NEXT
