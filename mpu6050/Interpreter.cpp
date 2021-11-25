@@ -28,16 +28,23 @@ bool Interpreter::stopSignal() {
   return redStop;
 }
 
-//analyze raw data to configure state values
+/*
+Green signal overrides red signal
+Red signal overrides null signal
+*/
 void Interpreter::analyze() {
-  if (accel_x > 9) {
-    redStop = true;
-  } else {
-    redStop = false;
-  }
-  if (abs(gyro_y) > 2) {
+  boolean red, green;
+  //feed data
+  cell.load(accel_x, gyro_y);
+  //get signals
+  red = cell.isRed();
+  green = cell.isGreen();
+  //decisions
+  if (green) {
     greenPass = true;
-  } else {
-    greenPass = false; 
+    redStop = false;
+  } else if (red) {
+    greenPass = false;
+    redStop = true;
   }
 }

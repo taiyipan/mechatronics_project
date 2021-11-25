@@ -137,5 +137,5 @@ void loop() {
     digitalWrite(redStop, LOW);
   }
 
-  delay(500);
+  delay(100);
 }
