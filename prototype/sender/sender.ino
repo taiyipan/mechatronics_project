@@ -25,6 +25,10 @@
 #include "Interpreter.h"
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps20.h"
+#include <SPI.h>
+#include <String.h>
+#include <nRF24L01.h>
+#include <RF24.h>
 
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
 // is used in I2Cdev.h
@@ -39,6 +43,9 @@
 // AD0 high = 0x69
 MPU6050 mpu;
 Interpreter interpreter;
+RF24 radio(9, 10); // CE, CSN
+int a;
+const byte address[6] = "00001";     //Byte of array representing the address. This is the address where we will send the data. This should be same on the receiving side.
 //MPU6050 mpu(0x69); // <-- use for AD0 high
 
 /* =========================================================================
@@ -166,14 +173,14 @@ void setup() {
     pinMode(LED_PIN, OUTPUT);
     wdt_enable(WDTO_2S); // Watch dog 开启看门狗，并设置溢出时间为两秒
     //Configures the Led pin to behave as an output pin
-    pinMode(3, OUTPUT);
-    pinMode(4, OUTPUT);
-    pinMode(5, OUTPUT);
-    pinMode(6, OUTPUT);
-    pinMode(7, OUTPUT);
-    pinMode(8, OUTPUT);
-    pinMode(9, OUTPUT);
-    pinMode(10, OUTPUT);
+    // pinMode(3, OUTPUT);
+    // pinMode(4, OUTPUT);
+    // pinMode(5, OUTPUT);
+    // pinMode(6, OUTPUT);
+    // pinMode(7, OUTPUT);
+    // pinMode(8, OUTPUT);
+    // pinMode(9, OUTPUT);
+    // pinMode(10, OUTPUT);
 }
 
 
@@ -204,7 +211,9 @@ void loop() {
 
         //embed interpreter code
         interpreter.feed(yaw, pitch);
-        execute(interpreter.getLane(), interpreter.getAction());
+        int a = interpreter.getLaneAction()
+        //transmit command
+        radio.write(&a, sizeof(a));
 
         // blink LED to indicate activity
         blinkState = !blinkState;
@@ -212,46 +221,4 @@ void loop() {
         delay(100);
         wdt_reset(); //喂狗操作，使看门狗定时器复位
     }
-}
-
-//execute commands given by interpreter object
-void execute(int lane, int action) {
-  switch(lane) {
-    case 0: //lane 0 (front 0, then clockwise increment)
-      if (action == 0) { //red signal
-        digitalWrite(5, HIGH);
-        digitalWrite(6, LOW);
-      } else if (action == 1) { //green signal
-        digitalWrite(5, LOW);
-        digitalWrite(6, HIGH);
-      }
-      break;
-    case 1: //lane 1
-      if (action == 0) { //red signal
-        digitalWrite(9, HIGH);
-        digitalWrite(10, LOW);
-      } else if (action == 1) { //green signal
-        digitalWrite(9, LOW);
-        digitalWrite(10, HIGH);
-      }
-      break;
-    case 2: //lane 2
-      if (action == 0) { //red signal
-        digitalWrite(3, HIGH);
-        digitalWrite(4, LOW);
-      } else if (action == 1) { //green signal
-        digitalWrite(3, LOW);
-        digitalWrite(4, HIGH);
-      }
-      break;
-    case 3: //lane 3
-      if (action == 0) { //red signal
-        digitalWrite(7, HIGH);
-        digitalWrite(8, LOW);
-      } else if (action == 1) { //green signal
-        digitalWrite(7, LOW);
-        digitalWrite(8, HIGH);
-      }
-      break;
-  }
 }

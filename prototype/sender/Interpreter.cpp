@@ -39,6 +39,10 @@ void Interpreter::computeAction() {
   if (isGreen()) action = 1;
 }
 
+int Interpreter::getLaneAction() {
+  return getLane * 10 + getAction;
+}
+
 int Interpreter::getLane() {
   return lane;
 }
