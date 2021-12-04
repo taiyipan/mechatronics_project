@@ -40,7 +40,7 @@ void Interpreter::computeAction() {
 }
 
 int Interpreter::getLaneAction() {
-  return getLane * 10 + getAction;
+  return getLane() * 10 + getAction();
 }
 
 int Interpreter::getLane() {
