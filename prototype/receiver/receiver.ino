@@ -4,6 +4,7 @@
 #include <String.h>
 RF24 radio(9, 10); // CE, CSN
 const byte address[6] = "00001";
+bool manualMode = false;
 
 void setup() {
   // put your setup code here, to run once:
