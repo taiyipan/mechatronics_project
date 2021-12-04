@@ -176,15 +176,6 @@ void setup() {
     // configure LED for output
     pinMode(LED_PIN, OUTPUT);
     wdt_enable(WDTO_2S); // Watch dog 开启看门狗，并设置溢出时间为两秒
-    //Configures the Led pin to behave as an output pin
-    // pinMode(3, OUTPUT);
-    // pinMode(4, OUTPUT);
-    // pinMode(5, OUTPUT);
-    // pinMode(6, OUTPUT);
-    // pinMode(7, OUTPUT);
-    // pinMode(8, OUTPUT);
-    // pinMode(9, OUTPUT);
-    // pinMode(10, OUTPUT);
 
     // configure buttons for input
     pinMode(interruptButton, INPUT);
