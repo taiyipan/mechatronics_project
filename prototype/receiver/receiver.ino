@@ -74,6 +74,21 @@ void loop() {
   delay(100);
 }
 
+//void fullStop() {
+//  digitalWrite(lane1Red, HIGH);
+//  digitalWrite(lane1Yellow, LOW);
+//  digitalWrite(lane1Green, LOW);
+//  digitalWrite(lane2Red, HIGH);
+//  digitalWrite(lane2Yellow, LOW);
+//  digitalWrite(lane2Green, LOW);
+//  digitalWrite(lane3Red, HIGH);
+//  digitalWrite(lane3Yellow, LOW);
+//  digitalWrite(lane3Green, LOW);
+//  digitalWrite(lane4Red, HIGH);
+//  digitalWrite(lane4Yellow, LOW);
+//  digitalWrite(lane4Green, LOW);
+//}
+
 void bufferIncrement() {
   if (bufferStart) buffer++; //increment buffer count
 //  Serial.println(buffer);
@@ -95,7 +110,7 @@ void automaticMode() {
       step = 0;
       yellowTimer = 0;
     }
-  }
+  } 
 }
 
 //lane 1 and lane 3 green, other lanes red
@@ -156,12 +171,12 @@ void interpret(int n) {
         bufferStart = true; //start buffer count
         }
       }
-    }
     else {
       if (manualMode) execute(n);
     }
     n = -1; //reset n
   }
+}
 
 //execute commands transmitted from sender Arduino
 void execute(int command) {
@@ -173,48 +188,44 @@ void execute(int command) {
     case 1: //lane 1 (front 1, then clockwise increment)
       if (action == 0) { //red signal
         digitalWrite(lane1Green, LOW);
-        digitalWrite(lane1Yellow, HIGH);
-        delay(maxYellow * 100);
         digitalWrite(lane1Yellow, LOW);
         digitalWrite(lane1Red, HIGH);
       } else if (action == 1) { //green signal
         digitalWrite(lane1Red, LOW);
+        digitalWrite(lane1Yellow, LOW);
         digitalWrite(lane1Green, HIGH);
       }
       break;
     case 2: //lane 2
       if (action == 0) { //red signal
         digitalWrite(lane2Green, LOW);
-        digitalWrite(lane2Yellow, HIGH);
-        delay(maxYellow * 100);
         digitalWrite(lane2Yellow, LOW);
         digitalWrite(lane2Red, HIGH);
       } else if (action == 1) { //green signal
         digitalWrite(lane2Red, LOW);
+        digitalWrite(lane2Yellow, LOW);
         digitalWrite(lane2Green, HIGH);
       }
       break;
     case 3: //lane 3
       if (action == 0) { //red signal
         digitalWrite(lane3Green, LOW);
-        digitalWrite(lane3Yellow, HIGH);
-        delay(maxYellow * 100);
         digitalWrite(lane3Yellow, LOW);
         digitalWrite(lane3Red, HIGH);
       } else if (action == 1) { //green signal
         digitalWrite(lane3Red, LOW);
+        digitalWrite(lane3Yellow, LOW);
         digitalWrite(lane3Green, HIGH);
       }
       break;
     case 4: //lane 4
       if (action == 0) { //red signal
         digitalWrite(lane4Green, LOW);
-        digitalWrite(lane4Yellow, HIGH);
-        delay(maxYellow * 100);
         digitalWrite(lane4Yellow, LOW);
         digitalWrite(lane4Red, HIGH);
       } else if (action == 1) { //green signal
         digitalWrite(lane4Red, LOW);
+        digitalWrite(lane4Yellow, LOW);
         digitalWrite(lane4Green, HIGH);
       }
       break;
