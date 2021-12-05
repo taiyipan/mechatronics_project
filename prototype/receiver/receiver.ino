@@ -1,28 +1,60 @@
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
-#include <String.h>
+// #include <String.h>
+
+//declarations
 RF24 radio(9, 10); // CE, CSN
 const byte address[6] = "00001";
 bool manualMode = false;
 bool vertical = true;
-int n = 0;
+int n = -1; //integer variable to save data transmission from sender Arduino
 int step = 0;
-const int maxStep = 30;
+const int maxStep = 30; //value * 100ms traffic orientation cycle
+int buffer = 0;
+const int maxBuffer = 30; //value * 100ms button buffer (during buffer, not responding to further button press; reduce sensitivity; prevent instability)
+int yellowTimer = 0;
+const int maxYellow = 10;
+
+//global constants
+//A0 -> A5 map to pins 14 -> 19
+//lane 1 (top)
+const int lane1Red = 5;
+const int lane1Yellow = 6;
+const int lane1Green = 7;
+
+//lane 2 (right)
+const int lane2Red = 16; //A2
+const int lane2Yellow = 15; //A1
+const int lane2Green = 14; //A0
+
+//lane 3 (bottom)
+const int lane3Red = 2;
+const int lane3Yellow = 3;
+const int lane3Green = 4;
+
+//lane 4 (left)
+const int lane4Red = 19; //A5
+const int lane4Yellow = 18; //A4
+const int lane4Green = 17; //A3
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
 
-  // configure output pin
-  pinMode(A5, OUTPUT);
-  pinMode(A2, OUTPUT);
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
-  pinMode(7, OUTPUT);
+  // configure output pins
+  pinMode(lane1Red, OUTPUT);
+  pinMode(lane1Yellow, OUTPUT);
+  pinMode(lane1Green, OUTPUT);
+  pinMode(lane2Red, OUTPUT);
+  pinMode(lane2Yellow, OUTPUT);
+  pinMode(lane2Green, OUTPUT);
+  pinMode(lane3Red, OUTPUT);
+  pinMode(lane3Yellow, OUTPUT);
+  pinMode(lane3Green, OUTPUT);
+  pinMode(lane4Red, OUTPUT);
+  pinMode(lane4Yellow, OUTPUT);
+  pinMode(lane4Green, OUTPUT);
 
   radio.begin();
   radio.openReadingPipe(0, address);   //Setting the address at which we will receive the data
@@ -49,35 +81,73 @@ void automaticMode() {
       if (vertical) vertical = false;
       else vertical = true;
       step = 0;
+      yellowTimer = 0;
     }
   }
 }
 
-//lane 0 and lane 2 green, other lanes red
-void verticalTraffic() {
-  execute(01);
-  execute(21);
-  execute(10);
-  execute(30);
-}
-
 //lane 1 and lane 3 green, other lanes red
-void horizontalTraffic() {
-  execute(00);
-  execute(20);
-  execute(11);
-  execute(31);
+void verticalTraffic() {
+  //instant actions
+  digitalWrite(lane1Red, LOW);
+  digitalWrite(lane1Green, HIGH);
+  digitalWrite(lane3Red, LOW);
+  digitalWrite(lane3Green, HIGH);
+  digitalWrite(lane2Green, LOW);
+  digitalWrite(lane4Green, LOW);
+
+  //timed actions
+  if (yellowTimer < maxYellow) {
+    digitalWrite(lane2Yellow, HIGH);
+    digitalWrite(lane4Yellow, HIGH);
+  } else {
+    digitalWrite(lane2Yellow, LOW);
+    digitalWrite(lane4Yellow, LOW);
+    digitalWrite(lane2Red, HIGH);
+    digitalWrite(lane4Red, HIGH);
+  }
+  yellowTimer++;
 }
 
+//lane 2 and lane 4 green, other lanes red
+void horizontalTraffic() {
+  //instant actions
+  digitalWrite(lane2Red, LOW);
+  digitalWrite(lane2Green, HIGH);
+  digitalWrite(lane4Red, LOW);
+  digitalWrite(lane4Green, HIGH);
+  digitalWrite(lane1Green, LOW);
+  digitalWrite(lane3Green, LOW);
+
+  //timed actions
+  if (yellowTimer < maxYellow) {
+    digitalWrite(lane1Yellow, HIGH);
+    digitalWrite(lane3Yellow, HIGH);
+  } else {
+    digitalWrite(lane1Yellow, LOW);
+    digitalWrite(lane3Yellow, LOW);
+    digitalWrite(lane1Red, HIGH);
+    digitalWrite(lane3Red, HIGH);
+  }
+  yellowTimer++;
+}
+
+//interpret integer transmitted by sender Arduino
 void interpret(int n) {
-  if (n != 0) {
+  if (n != -1) {
+    Serial.println(n);
     if (n == 999) {
-      if (manualMode) manualMode = false;
-      else manualMode = true;
+      if (buffer == 0) { //detect button press with buffer (prevent instability)
+        Serial.println("Mode change detected");
+        if (manualMode) manualMode = false;
+        else manualMode = true;
+        buffer++; //increment buffer count
+        if (buffer >= maxBuffer) buffer = 0; //once buffer reaches threshold, reset buffer
+      }
     }
     else execute(n);
     //reset n
-    n = 0;
+    n = -1;
   }
 }
 
@@ -88,40 +158,52 @@ void execute(int command) {
   int action = command % 10;
   //execute accordingly
   switch(lane) {
-    case 0: //lane 0 (front 0, then clockwise increment)
+    case 1: //lane 1 (front 1, then clockwise increment)
       if (action == 0) { //red signal
-        digitalWrite(6, HIGH);
-        digitalWrite(7, LOW);
+        digitalWrite(lane1Green, LOW);
+        digitalWrite(lane1Yellow, HIGH);
+        delay(maxYellow * 100);
+        digitalWrite(lane1Yellow, LOW);
+        digitalWrite(lane1Red, HIGH);
       } else if (action == 1) { //green signal
-        digitalWrite(6, LOW);
-        digitalWrite(7, HIGH);
-      }
-      break;
-    case 1: //lane 1
-      if (action == 0) { //red signal
-        digitalWrite(2, HIGH);
-        digitalWrite(3, LOW);
-      } else if (action == 1) { //green signal
-        digitalWrite(2, LOW);
-        digitalWrite(3, HIGH);
+        digitalWrite(lane1Red, LOW);
+        digitalWrite(lane1Green, HIGH);
       }
       break;
     case 2: //lane 2
       if (action == 0) { //red signal
-        digitalWrite(A5, HIGH);
-        digitalWrite(A2, LOW);
+        digitalWrite(lane2Green, LOW);
+        digitalWrite(lane2Yellow, HIGH);
+        delay(maxYellow * 100);
+        digitalWrite(lane2Yellow, LOW);
+        digitalWrite(lane2Red, HIGH);
       } else if (action == 1) { //green signal
-        digitalWrite(A5, LOW);
-        digitalWrite(A2, HIGH);
+        digitalWrite(lane2Red, LOW);
+        digitalWrite(lane2Green, HIGH);
       }
       break;
     case 3: //lane 3
       if (action == 0) { //red signal
-        digitalWrite(4, HIGH);
-        digitalWrite(5, LOW);
+        digitalWrite(lane3Green, LOW);
+        digitalWrite(lane3Yellow, HIGH);
+        delay(maxYellow * 100);
+        digitalWrite(lane3Yellow, LOW);
+        digitalWrite(lane3Red, HIGH);
       } else if (action == 1) { //green signal
-        digitalWrite(4, LOW);
-        digitalWrite(5, HIGH);
+        digitalWrite(lane3Red, LOW);
+        digitalWrite(lane3Green, HIGH);
+      }
+      break;
+    case 4: //lane 4
+      if (action == 0) { //red signal
+        digitalWrite(lane4Green, LOW);
+        digitalWrite(lane4Yellow, HIGH);
+        delay(maxYellow * 100);
+        digitalWrite(lane4Yellow, LOW);
+        digitalWrite(lane4Red, HIGH);
+      } else if (action == 1) { //green signal
+        digitalWrite(lane4Red, LOW);
+        digitalWrite(lane4Green, HIGH);
       }
       break;
   }

@@ -25,10 +25,10 @@ void Interpreter::computeLane() {
   //reset lane
   lane = -1;
   //decide lane
-  if (y < 45 && y >= -45) lane = 0;
-  else if (y < 135 && y >= 45) lane = 1;
-  else if (y < -135 || y >= 135) lane = 2;
-  else if (y < -45 && y >= -135) lane = 3;
+  if (y < 45 && y >= -45) lane = 1; //top lane
+  else if (y < 135 && y >= 45) lane = 2; //right lane
+  else if (y < -135 || y >= 135) lane = 3; //bottom lane
+  else if (y < -45 && y >= -135) lane = 4; //left lane
 }
 
 void Interpreter::computeAction() {
@@ -40,7 +40,8 @@ void Interpreter::computeAction() {
 }
 
 int Interpreter::getLaneAction() {
-  return getLane() * 10 + getAction();
+  if (getLane() != -1 && getAction() != -1) return getLane() * 10 + getAction();
+  else return -1;
 }
 
 int Interpreter::getLane() {

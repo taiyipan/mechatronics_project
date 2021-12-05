@@ -26,7 +26,7 @@
 #include "I2Cdev.h"
 #include "MPU6050_6Axis_MotionApps20.h"
 #include <SPI.h>
-#include <String.h>
+//#include <String.h>
 #include <nRF24L01.h>
 #include <RF24.h>
 
@@ -206,12 +206,12 @@ void loop() {
         yaw = ypr[0] * 180/M_PI;
         pitch = ypr[1] * 180/M_PI;
         roll = ypr[2] * 180/M_PI;
-        Serial.print("ypr\t");
-        Serial.print(yaw);
-        Serial.print("\t");
-        Serial.print(pitch);
-        Serial.print("\t");
-        Serial.println(roll);
+         Serial.print("ypr\t");
+         Serial.print(yaw);
+         Serial.print("\t");
+         Serial.print(pitch);
+         Serial.print("\t");
+         Serial.println(roll);
 
         //reset function check
         checkReset();
@@ -237,6 +237,7 @@ void toggleManualMode() {
     //transmit code 999 to receiver Arduino
     int a = 999;
     radio.write(&a, sizeof(a));
+    Serial.println(999);
   }
 }
 
@@ -245,7 +246,10 @@ void interpretAction() {
     interpreter.feed(yaw, pitch);
     int a = interpreter.getLaneAction();
     //transmit command
-    radio.write(&a, sizeof(a));
+    if (a != -1) {
+        radio.write(&a, sizeof(a));
+        Serial.println(a);
+    }
   }
 }
 
