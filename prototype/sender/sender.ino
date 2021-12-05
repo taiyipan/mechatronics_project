@@ -43,8 +43,8 @@
 // AD0 high = 0x69
 MPU6050 mpu;
 Interpreter interpreter;
-const int interruptButton = 2;
-const int calibrationButton = 4;
+const int interruptButton = 4;
+const int calibrationButton = 6;
 bool manualMode = false;
 RF24 radio(9, 10); // CE, CSN
 int a;
@@ -243,7 +243,7 @@ void toggleManualMode() {
 void interpretAction() {
   if (manualMode) {
     interpreter.feed(yaw, pitch);
-    int a = interpreter.getLaneAction()
+    int a = interpreter.getLaneAction();
     //transmit command
     radio.write(&a, sizeof(a));
   }

@@ -15,8 +15,8 @@ void setup() {
   Serial.begin(115200);
 
   // configure output pin
-  pinMode(0, OUTPUT);
-  pinMode(1, OUTPUT);
+  pinMode(A5, OUTPUT);
+  pinMode(A2, OUTPUT);
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
@@ -90,15 +90,6 @@ void execute(int command) {
   switch(lane) {
     case 0: //lane 0 (front 0, then clockwise increment)
       if (action == 0) { //red signal
-        digitalWrite(2, HIGH);
-        digitalWrite(3, LOW);
-      } else if (action == 1) { //green signal
-        digitalWrite(2, LOW);
-        digitalWrite(3, HIGH);
-      }
-      break;
-    case 1: //lane 1
-      if (action == 0) { //red signal
         digitalWrite(6, HIGH);
         digitalWrite(7, LOW);
       } else if (action == 1) { //green signal
@@ -106,13 +97,22 @@ void execute(int command) {
         digitalWrite(7, HIGH);
       }
       break;
+    case 1: //lane 1
+      if (action == 0) { //red signal
+        digitalWrite(2, HIGH);
+        digitalWrite(3, LOW);
+      } else if (action == 1) { //green signal
+        digitalWrite(2, LOW);
+        digitalWrite(3, HIGH);
+      }
+      break;
     case 2: //lane 2
       if (action == 0) { //red signal
-        digitalWrite(0, HIGH);
-        digitalWrite(1, LOW);
+        digitalWrite(A5, HIGH);
+        digitalWrite(A2, LOW);
       } else if (action == 1) { //green signal
-        digitalWrite(0, LOW);
-        digitalWrite(1, HIGH);
+        digitalWrite(A5, LOW);
+        digitalWrite(A2, HIGH);
       }
       break;
     case 3: //lane 3
