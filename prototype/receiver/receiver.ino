@@ -11,6 +11,7 @@ bool vertical = true;
 int n = -1; //integer variable to save data transmission from sender Arduino
 int step = 0;
 const int maxStep = 30; //value * 100ms traffic orientation cycle
+bool bufferStart = false;
 int buffer = 0;
 const int maxBuffer = 30; //value * 100ms button buffer (during buffer, not responding to further button press; reduce sensitivity; prevent instability)
 int yellowTimer = 0;
@@ -67,9 +68,20 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (radio.available()) { //Looking for the data
     radio.read(&n, sizeof(n)); //Reading the data
+    interpret(n);
   }
-  interpret(n);
+  bufferIncrement();
   delay(100);
+}
+
+void bufferIncrement() {
+  if (bufferStart) buffer++; //increment buffer count
+//  Serial.println(buffer);
+  if (buffer >= maxBuffer) {
+    //once buffer reaches threshold, reset buffer
+    buffer = 0;
+    bufferStart = false;
+    }
 }
 
 void automaticMode() {
@@ -141,15 +153,15 @@ void interpret(int n) {
         Serial.println("Mode change detected");
         if (manualMode) manualMode = false;
         else manualMode = true;
-        buffer++; //increment buffer count
-        if (buffer >= maxBuffer) buffer = 0; //once buffer reaches threshold, reset buffer
+        bufferStart = true; //start buffer count
+        }
       }
     }
-    else execute(n);
-    //reset n
-    n = -1;
+    else {
+      if (manualMode) execute(n);
+    }
+    n = -1; //reset n
   }
-}
 
 //execute commands transmitted from sender Arduino
 void execute(int command) {

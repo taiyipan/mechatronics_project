@@ -45,7 +45,6 @@ MPU6050 mpu;
 Interpreter interpreter;
 const int interruptButton = 4;
 const int calibrationButton = 6;
-bool manualMode = false;
 RF24 radio(9, 10); // CE, CSN
 int a;
 const byte address[6] = "00001";     //Byte of array representing the address. This is the address where we will send the data. This should be same on the receiving side.
@@ -232,8 +231,6 @@ void loop() {
 
 void toggleManualMode() {
   if (digitalRead(interruptButton) == HIGH) {
-    if (manualMode) manualMode = false;
-    else manualMode = true;
     //transmit code 999 to receiver Arduino
     int a = 999;
     radio.write(&a, sizeof(a));
@@ -242,14 +239,12 @@ void toggleManualMode() {
 }
 
 void interpretAction() {
-  if (manualMode) {
-    interpreter.feed(yaw, pitch);
-    int a = interpreter.getLaneAction();
-    //transmit command
-    if (a != -1) {
-        radio.write(&a, sizeof(a));
-        Serial.println(a);
-    }
+  interpreter.feed(yaw, pitch);
+  int a = interpreter.getLaneAction();
+  //transmit command
+  if (a != -1) {
+      radio.write(&a, sizeof(a));
+      Serial.println(a);
   }
 }
 
