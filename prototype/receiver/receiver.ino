@@ -17,6 +17,9 @@ const int maxBuffer = 30; //value * 100ms button buffer (during buffer, not resp
 int yellowTimer = 0;
 const int maxYellow = 10;
 
+//declare button
+const int toggleButton = 8;
+
 //global constants
 //A0 -> A5 map to pins 14 -> 19
 //lane 1 (top)
@@ -57,6 +60,9 @@ void setup() {
   pinMode(lane4Yellow, OUTPUT);
   pinMode(lane4Green, OUTPUT);
 
+  //configure input pins
+  pinMode(toggleButton, INPUT);
+
   radio.begin();
   radio.openReadingPipe(0, address);   //Setting the address at which we will receive the data
   radio.setPALevel(RF24_PA_MIN);       //You can set this as minimum or maximum depending on the distance between the transmitter and receiver.
@@ -65,6 +71,7 @@ void setup() {
 
 void loop() {
   automaticMode();
+  checkToggleButton();
   // put your main code here, to run repeatedly:
   if (radio.available()) { //Looking for the data
     radio.read(&n, sizeof(n)); //Reading the data
@@ -72,6 +79,11 @@ void loop() {
   }
   bufferIncrement();
   delay(100);
+}
+
+//in place of 999 remote singal, create localized 999 signal from local button press
+void checkToggleButton() {
+  if (digitalRead(toggleButton) == HIGH) interpret(999);
 }
 
 //void fullStop() {
@@ -110,7 +122,7 @@ void automaticMode() {
       step = 0;
       yellowTimer = 0;
     }
-  } 
+  }
 }
 
 //lane 1 and lane 3 green, other lanes red
