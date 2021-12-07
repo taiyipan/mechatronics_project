@@ -43,10 +43,10 @@
 // AD0 high = 0x69
 MPU6050 mpu;
 Interpreter interpreter;
-const int interruptButton = 4;
-const int calibrationButton = 6;
+// const int interruptButton = 4;
+// const int calibrationButton = 6;
 RF24 radio(9, 10); // CE, CSN
-int a;
+int a = -1;
 const byte address[6] = "00001";     //Byte of array representing the address. This is the address where we will send the data. This should be same on the receiving side.
 //MPU6050 mpu(0x69); // <-- use for AD0 high
 
@@ -177,8 +177,8 @@ void setup() {
     wdt_enable(WDTO_2S); // Watch dog 开启看门狗，并设置溢出时间为两秒
 
     // configure buttons for input
-    pinMode(interruptButton, INPUT);
-    pinMode(calibrationButton, INPUT);
+    // pinMode(interruptButton, INPUT);
+    // pinMode(calibrationButton, INPUT);
 
     radio.begin();                  //Starting the Wireless communication
     radio.openWritingPipe(address); //Setting the address where we will send the data
@@ -246,8 +246,10 @@ void interpretAction() {
       radio.write(&a, sizeof(a));
       Serial.println(a);
   }
+  a = -1; //reset a
 }
-
+/*
 void checkReset() {
   if (digitalRead(calibrationButton) == HIGH) resetFunc();
 }
+*/
