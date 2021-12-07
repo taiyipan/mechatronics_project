@@ -213,10 +213,10 @@ void loop() {
          Serial.println(roll);
 
         //reset function check
-        checkReset();
+//        checkReset();
 
         //manual mode check
-        toggleManualMode();
+//        toggleManualMode();
 
         //embed interpreter code
         interpretAction();
@@ -228,7 +228,7 @@ void loop() {
         wdt_reset(); //喂狗操作，使看门狗定时器复位
     }
 }
-
+/*
 void toggleManualMode() {
   if (digitalRead(interruptButton) == HIGH) {
     //transmit code 999 to receiver Arduino
@@ -237,6 +237,7 @@ void toggleManualMode() {
     Serial.println(999);
   }
 }
+*/
 
 void interpretAction() {
   interpreter.feed(yaw, pitch);
