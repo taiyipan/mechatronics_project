@@ -4,9 +4,9 @@
 class Interpreter
 {
 private:
-  const static int SIZE = 5;
+  const static int SIZE = 15;
   const float pitchUp = 85;
-  const float pitchOffSet = 20;
+  const float pitchOffSet = 30;
   float y; //yaw value, real time
   float p[SIZE]; //pitch array, last 2 seconds, in 20 timesteps, 100ms each timestep
   int lane, action;

@@ -72,5 +72,5 @@ bool Interpreter::isGreen() {
     if (p[i] > pitchUp - pitchOffSet && p[i] < pitchUp + pitchOffSet)
       countUpP++;
   }
-  return (countSmallP > 1) && (countlargeP > 1) && (countUpP > 1);
+  return (countSmallP > 2) && (countlargeP > 2) && (countUpP > 2);
 }
