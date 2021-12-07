@@ -43,8 +43,8 @@
 // AD0 high = 0x69
 MPU6050 mpu;
 Interpreter interpreter;
-// const int interruptButton = 4;
-// const int calibrationButton = 6;
+const int interruptButton = 4;
+const int calibrationButton = 6;
 RF24 radio(9, 10); // CE, CSN
 int a = -1;
 const byte address[6] = "00001";     //Byte of array representing the address. This is the address where we will send the data. This should be same on the receiving side.
@@ -177,8 +177,8 @@ void setup() {
     wdt_enable(WDTO_2S); // Watch dog 开启看门狗，并设置溢出时间为两秒
 
     // configure buttons for input
-    // pinMode(interruptButton, INPUT);
-    // pinMode(calibrationButton, INPUT);
+    pinMode(interruptButton, INPUT);
+    pinMode(calibrationButton, INPUT);
 
     radio.begin();                  //Starting the Wireless communication
     radio.openWritingPipe(address); //Setting the address where we will send the data
@@ -212,11 +212,11 @@ void loop() {
          Serial.print("\t");
          Serial.println(roll);
 
-        //reset function check
-//        checkReset();
+        // reset function check
+       checkReset();
 
-        //manual mode check
-//        toggleManualMode();
+        // manual mode check
+       toggleManualMode();
 
         //embed interpreter code
         interpretAction();
@@ -228,7 +228,7 @@ void loop() {
         wdt_reset(); //喂狗操作，使看门狗定时器复位
     }
 }
-/*
+
 void toggleManualMode() {
   if (digitalRead(interruptButton) == HIGH) {
     //transmit code 999 to receiver Arduino
@@ -237,7 +237,6 @@ void toggleManualMode() {
     Serial.println(999);
   }
 }
-*/
 
 void interpretAction() {
   interpreter.feed(yaw, pitch);
@@ -249,8 +248,7 @@ void interpretAction() {
   }
   a = -1; //reset a
 }
-/*
+
 void checkReset() {
   if (digitalRead(calibrationButton) == HIGH) resetFunc();
 }
-*/
