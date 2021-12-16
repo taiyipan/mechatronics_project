@@ -1,5 +1,7 @@
 /*
-Receiver code for Arduino Uno. Receives and interprets control signals from Sender. Manages traffic lights between automatic and manual mode. 
+receiver.ino
+
+Receiver code for Arduino Uno. Receives and interprets control signals from Sender. Manages traffic lights between automatic and manual mode.
 */
 
 #include <SPI.h>

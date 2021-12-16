@@ -1,4 +1,6 @@
 /*
+sender.ino
+
 Sender code for Arduino Nano. Pass raw sensor data from MPU6050 to Interpreter object, gets commands back from Interpreter, then transmits commands to Receiver via NRF module.
 */
 
